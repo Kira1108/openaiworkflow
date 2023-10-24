@@ -1,6 +1,5 @@
 import pandas as pd
 from database import Base, engine
-import pandas as pd
 from crud import add_dataframe
 import typer
 
