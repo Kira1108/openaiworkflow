@@ -11,17 +11,18 @@ from config import get_settings
 
 settings = get_settings()
 
-def get_completion(prompt:str, model="gpt-3.5-turbo"):
+def get_completion(prompt:str, model="gpt-3.5-turbo", timeout:int = 30):
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
         temperature=0,
+        timeout = timeout
     )
     return response.choices[0].message["content"]
 
 
-def mock_ai(prompt:str, model="davinci"):
+def mock_ai(prompt:str, model="davinci", timeout:int = 30):
     import string
     import random
     return "success " + ''.join(random.choice(string.ascii_lowercase) for i in range(10))
@@ -29,14 +30,15 @@ def mock_ai(prompt:str, model="davinci"):
         
 class DescriptionParser:
     
-    def __init__(self, testing:bool = True, batch_sleep:float = 0.2):
+    def __init__(self, testing:bool = True, batch_sleep:float = 0.2, timeout = 30):
         self.ai = get_completion if not testing else mock_ai
         self.batch_sleep = batch_sleep
+        self.timeout = timeout
 
     def parse_single(self, text_id: int, **kwargs):
         try:
             prompt = description.prompt.format(**kwargs)
-            result = self.ai(prompt)
+            result = self.ai(prompt, timeout = self.timeout)
             update_parse_by_id(text_id, result)
         except Exception as e:
             print("Error while prasing text.")

@@ -91,4 +91,13 @@ def reset_all_text(db:Session):
     db.commit()
     return True
 
+@inject_db
+def reset_breaking_records(db:Session):
+    # update those records with is_parse = True and parse_result = None
+    # set is_parse = False
+    db.query(Text).filter(Text.is_parsed == True, Text.parse_result == None).update(
+        {"is_parsed":False}
+    )
+    
+    return True
  
