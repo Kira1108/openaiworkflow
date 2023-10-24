@@ -81,3 +81,14 @@ def add_dataframe(df, text_col:str = "text", key_col:str = None):
             
     return True
 
+
+def reset_all_text(db:Session):
+    db.query(Text).update(
+        {"parse_result":None,
+         "is_parsed":False,
+         "update_time":func.now()}
+    )
+    db.commit()
+    return True
+
+ 
